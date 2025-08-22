@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -14,17 +15,12 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { session } = useAuth();
 
-  // Redirect if user is already logged in
-  useEffect(() => {
-    const checkSession = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            navigate('/');
-        }
-    };
-    checkSession();
-  }, [navigate]);
+  // If a session is found, redirect immediately
+  if (session) {
+    navigate('/');
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

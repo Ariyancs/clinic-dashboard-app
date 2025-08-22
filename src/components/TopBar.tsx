@@ -1,21 +1,18 @@
 import { useNavigate } from "react-router-dom";
-import { Bell, User, LogOut, Search } from "lucide-react";
+import { Bell, User, LogOut, Search, Settings, UserCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/components/ui/sonner";
+import { useAuth } from "@/hooks/useAuth";
 
-type UserProfile = { full_name: string; role: string; } | null;
-
-export function TopBar({ user }: { user: UserProfile }) {
+export function TopBar() {
+  const { signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) toast.error("Logout failed", { description: error.message });
-    else navigate("/login");
+    await signOut();
+    navigate('/login'); 
   };
 
   return (
@@ -38,12 +35,19 @@ export function TopBar({ user }: { user: UserProfile }) {
                 <User className="h-4 w-4 text-primary-foreground" />
               </div>
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium">{user?.full_name || "User"}</p>
-                <p className="text-xs text-muted-foreground capitalize">{user?.role || "Role"}</p>
+                <p className="text-sm font-medium">User</p>
+                <p className="text-xs text-muted-foreground">Menu</p>
               </div>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem>
+              <UserCog className="mr-2 h-4 w-4" /> Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Settings className="mr-2 h-4 w-4" /> Settings
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" /> Logout
             </DropdownMenuItem>
