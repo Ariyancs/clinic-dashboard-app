@@ -138,3 +138,28 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  /* Hide everything in the body by default */
+  body > * {
+    display: none !important;
+  }
+
+  /* Show only the print container and its children */
+  .print-container, .print-container * {
+    display: block !important;
+  }
+
+  /* Position the print container to fill the page */
+  .print-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Hide elements that shouldn't be printed, like buttons */
+  .no-print {
+    display: none !important;
+  }
+}
